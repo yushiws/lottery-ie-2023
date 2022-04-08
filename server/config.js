@@ -15,21 +15,21 @@ const prizes = [
   },
   {
     type: 1,
-    count: 10,
+    count: 1,
     text: "一等奖",
     title: "",
     img: "../img/mbp.jpg"
   },
   {
     type: 2,
-    count: 30,
+    count: 4,
     text: "二等奖",
     title: "",
     img: "../img/huawei.png"
   },
   {
     type: 3,
-    count: 50,
+    count: 2,
     text: "三等奖",
     title: "",
     img: "../img/ipad.jpg"
@@ -39,7 +39,7 @@ const prizes = [
 /**
  * 一次抽取的奖品个数与prizes对应
  */
-const EACH_COUNT = [1, 5, 10, 10];
+const EACH_COUNT = [1, 1, 1, 1];
 
 /**
  * 卡片公司名称标识
