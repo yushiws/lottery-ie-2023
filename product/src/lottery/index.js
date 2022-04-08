@@ -611,8 +611,6 @@ function resetCard(duration = 500) {
 /**
  * 抽奖
  */
-var character;
-
 function lottery() {
   // if (isLotting) {
   //   rotateObj.stop();
@@ -638,7 +636,7 @@ function lottery() {
     if (currentPrize.type == 3) {
         if (leftPrizeCount == 2) {
             let luckyId = random(2);
-            character = "律码".slice(luckyId,luckyId+1);
+            var character = "律码".slice(luckyId,luckyId+1);
             currentLuckys.push([null, character]);
             leftPrizeCount--;
 
@@ -649,7 +647,7 @@ function lottery() {
             selectedCardIndex.push(cardIndex);
         }
         else {
-            currentLuckys.push([null, character]);
+            currentLuckys.push(basicData.luckyUsers[currentPrize.type][0]);
             let luckyId = random(7);
             var letter = "LAWCODE".slice(luckyId,luckyId+1);
             currentLuckys.push([null, letter]);
@@ -681,7 +679,7 @@ function lottery() {
             }
         }
     }
-    console.log(currentLuckys);
+    // console.log(currentLuckys);
     selectCard();
   });
 }
@@ -852,7 +850,7 @@ function createHighlight() {
 
   return highlight;
 }
-
+/*
 let onload = window.onload;
 
 window.onload = function () {
@@ -901,3 +899,4 @@ window.onload = function () {
     musicBox.click();
   }, 1000);
 };
+*/
