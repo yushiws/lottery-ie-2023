@@ -611,6 +611,8 @@ function resetCard(duration = 500) {
 /**
  * 抽奖
  */
+var character;
+
 function lottery() {
   // if (isLotting) {
   //   rotateObj.stop();
@@ -633,25 +635,53 @@ function lottery() {
       basicData.leftUsers = basicData.users.slice();
       leftCount = basicData.leftUsers.length;
     }
+    if (currentPrize.type == 3) {
+        if (leftPrizeCount == 2) {
+            let luckyId = random(2);
+            character = "律码".slice(luckyId,luckyId+1);
+            currentLuckys.push([null, character]);
+            leftPrizeCount--;
 
-    for (let i = 0; i < perCount; i++) {
-      let luckyId = random(leftCount);
-      currentLuckys.push(basicData.leftUsers.splice(luckyId, 1)[0]);
-      leftCount--;
-      leftPrizeCount--;
-
-      let cardIndex = random(TOTAL_CARDS);
-      while (selectedCardIndex.includes(cardIndex)) {
-        cardIndex = random(TOTAL_CARDS);
-      }
-      selectedCardIndex.push(cardIndex);
-
-      if (leftPrizeCount === 0) {
-        break;
-      }
+            let cardIndex = random(TOTAL_CARDS);
+            while (selectedCardIndex.includes(cardIndex)) {
+                cardIndex = random(TOTAL_CARDS);
+            }
+            selectedCardIndex.push(cardIndex);
+        }
+        else {
+            currentLuckys.push([null, character]);
+            let luckyId = random(7);
+            var letter = "LAWCODE".slice(luckyId,luckyId+1);
+            currentLuckys.push([null, letter]);
+            leftPrizeCount--;
+            for (let i = 0; i < 2; i++) {
+                let cardIndex = random(TOTAL_CARDS);
+                while (selectedCardIndex.includes(cardIndex)) {
+                    cardIndex = random(TOTAL_CARDS);
+                }
+                selectedCardIndex.push(cardIndex);
+            }
+        }
     }
+    else {
+        for (let i = 0; i < perCount; i++) {
+            let luckyId = random(leftCount);
+            currentLuckys.push(basicData.leftUsers.splice(luckyId, 1)[0]);
+            leftCount--;
+            leftPrizeCount--;
 
-    // console.log(currentLuckys);
+            let cardIndex = random(TOTAL_CARDS);
+            while (selectedCardIndex.includes(cardIndex)) {
+                cardIndex = random(TOTAL_CARDS);
+            }
+            selectedCardIndex.push(cardIndex);
+
+            if (leftPrizeCount === 0) {
+                break;
+            }
+        }
+    }
+    console.log(currentLuckys);
     selectCard();
   });
 }
