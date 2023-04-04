@@ -214,7 +214,7 @@ function bindEvent() {
         rotateObj.stop();
         btns.lottery.innerHTML = "开始抽奖";
       } else {
-        addQipao("抽慢一点点～～");
+        addQipao("抽慢一点点");
       }
       return false;
     }
@@ -229,7 +229,7 @@ function bindEvent() {
       // 进入抽奖
       case "enter":
         removeHighlight();
-        addQipao(`马上抽取${currentPrize.text}，不要走开`);
+        addQipao(`马上抽取${currentPrize.text}`);
         // rotate = !rotate;
         rotate = true;
         switchScreen("lottery");
@@ -267,16 +267,16 @@ function bindEvent() {
           // 抽奖
           lottery();
         });
-        addQipao(`正在抽取${currentPrize.text}，调整好姿势`);
+        addQipao(`正在抽取${currentPrize.text}`);
         break;
       // 重新抽奖
       case "reLottery":
         if (currentLuckys.length === 0) {
-          addQipao(`当前还没有抽奖，无法重新抽取喔~~`);
+          addQipao(`当前还没有抽奖，无法重新抽取`);
           return;
         }
         setErrorData(currentLuckys);
-        addQipao(`重新抽取${currentPrize.text}，做好准备`);
+        addQipao(`重新抽取${currentPrize.text}`);
         setLotteryStatus(true);
         // 重新抽奖则直接进行抽取，不对上一次的抽奖数据进行保存
         // 抽奖
@@ -293,7 +293,7 @@ function bindEvent() {
             currentLuckys = [];
           });
           exportData();
-          addQipao(`数据已保存到EXCEL中。`);
+          addQipao(`数据已保存到EXCEL中`);
         });
         break;
     }
@@ -342,12 +342,13 @@ function createCard(user, isBold, id, showTable) {
   } else {
     element.className = "element";
     element.style.backgroundColor =
-      "rgba(103,130,185," + (Math.random() * 0.7 + 0.25) + ")";
+      "rgba(86, 114, 125, " + (Math.random() * 0.7 + 0.25) + ")";
   }
   //添加公司标识
-  element.appendChild(createElement("company", COMPANY));
-
-  element.appendChild(createElement("name", user[1]));
+  element.appendChild(createElement("item0", user[0]));
+  element.appendChild(createElement("dot", "·"));
+  element.appendChild(createElement("item1", user[1][0] + "<br>" + user[1][1]));
+  element.appendChild(createElement("item2", user[2]));
 
   //element.appendChild(createElement("details", user[0] + "<br/>" + user[2]));
   return element;
@@ -510,10 +511,13 @@ function selectCard(duration = 600) {
     }
   }
 
-  let text = currentLuckys.map(item => item[1]);
-  addQipao(
-    `恭喜${text.join("、")}获得${currentPrize.text}`
-  );
+  let text = currentLuckys.map(item => item[0] + "·" + item[1] + (item[2] || ""));
+  let flag = currentLuckys.map(item => item[1]);
+  if (flag[0]) {
+    addQipao(
+      `恭喜${text.join("、")}获得${currentPrize.text}`
+    );
+  }
 
   selectedCardIndex.forEach((cardIndex, index) => {
     changeCard(cardIndex, currentLuckys[index]);
@@ -636,8 +640,8 @@ function lottery() {
     if (currentPrize.type == 3) {
         if (leftPrizeCount == 2) {
             let luckyId = random(2);
-            var character = "律码".slice(luckyId,luckyId+1);
-            currentLuckys.push([null, character]);
+            var character = "清律".slice(luckyId, luckyId + 1);
+            currentLuckys.push([character, null, null]);
             leftPrizeCount--;
 
             let cardIndex = random(TOTAL_CARDS);
@@ -647,25 +651,17 @@ function lottery() {
             selectedCardIndex.push(cardIndex);
         }
         else {
-            var character = basicData.luckyUsers[currentPrize.type][0]
-            currentLuckys.push(character);
-            var letter;
-            if (character[1] == "律") {
-                let luckyId = random(7);
-                letter = "LAWCODE".slice(luckyId, luckyId + 1);
-            } else {
-                let luckyId = random(5);
-                letter = "LWCDE".slice(luckyId, luckyId + 1);
-            }
-            currentLuckys.push([null, letter]);
+            let luckyId = random(7);
+            var character = basicData.luckyUsers[currentPrize.type][0][0];
+            var letter = ["展卷", "问篆", "唱丝", "寻石", "习笔", "淬墨", "入画"][luckyId];
+            currentLuckys.push([character, letter, null]);
             leftPrizeCount--;
-            for (let i = 0; i < 2; i++) {
-                let cardIndex = random(TOTAL_CARDS);
-                while (selectedCardIndex.includes(cardIndex)) {
-                    cardIndex = random(TOTAL_CARDS);
-                }
-                selectedCardIndex.push(cardIndex);
+
+            let cardIndex = random(TOTAL_CARDS);
+            while (selectedCardIndex.includes(cardIndex)) {
+                cardIndex = random(TOTAL_CARDS);
             }
+            selectedCardIndex.push(cardIndex);
         }
     }
     else {
@@ -743,9 +739,20 @@ function random(num) {
 function changeCard(cardIndex, user) {
   let card = threeDCards[cardIndex].element;
 
-  card.innerHTML = `<div class="company">${COMPANY}</div><div class="name">${
-    user[1]
-  }</div><div class="details">${user[0] || ''}<br/>${user[2] || ''}</div>`;
+  if (!user[1]) {
+    card.innerHTML = `<div class="item0_0">${user[0]}</div>`;
+  }
+  else if (!user[2]) {
+    card.innerHTML = `<div class="item0_1">${user[0]}</div>
+                      <div class="dot_1">·</div>
+                      <div class="item1_1">${user[1][0]}<br>${user[1][1]}</div>`;
+  }
+  else {
+    card.innerHTML = `<div class="item0">${user[0] || ''}</div>
+                      <div class="dot">·</div>
+                      <div class="item1">${user[1][0] || ''}<br>${user[1][1] || ''}</div>
+                      <div class="item2">${user[2] || ''}</div>`;
+  }
 }
 
 /**
@@ -754,7 +761,7 @@ function changeCard(cardIndex, user) {
 function shine(cardIndex, color) {
   let card = threeDCards[cardIndex].element;
   card.style.backgroundColor =
-    color || "rgba(103,130,185," + (Math.random() * 0.7 + 0.25) + ")";
+    color || "rgba(86, 114, 125, " + (Math.random() * 0.7 + 0.25) + ")";
 }
 
 /**
