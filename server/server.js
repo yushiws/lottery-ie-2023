@@ -248,7 +248,7 @@ loadData();
 
 module.exports = {
   run: function(devPort, noOpen) {
-    let openBrowser = true;
+    let openBrowser = false;
     if (process.argv.length > 3) {
       if (process.argv[3] && (process.argv[3] + "").toLowerCase() === "n") {
         openBrowser = false;
